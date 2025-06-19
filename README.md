@@ -63,7 +63,7 @@ raw_bvp, ts    = model.bvp(raw=True) # Unfiltered BVP
 ## Time Slice 
 ```python
 now       = model.now                      # Video duration or current time
-bvp, ts   = model.bvp(start=10, end=20)    # BVP slice from 5 to 10 seconds
+bvp, ts   = model.bvp(start=10, end=20)    # BVP slice from 10 to 20 seconds
 bvp, ts   = model.bvp(start=-15)           # The last 15-second slice
 hr        = model.hr(start=-15)            # HR of the last 15 seconds 
 ```
