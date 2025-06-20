@@ -38,7 +38,7 @@ result = model.hr()
     'LF': 0.7347661052226675,     # Low Frequency Power
     'LF/HF': 0.5989721355243509   # LF/HF Ratio
   },
- 'latency': 0.0}                  # Real-time latency
+ 'latency': 0.0}                  # Real-Time Latency
 ```
 
 ## Real-Time Mode 
@@ -46,17 +46,25 @@ result = model.hr()
 import time
 model = rppg.Model()
 
-with model.video_capture(0):  # Connect to your webcam
+with model.video_capture(0):          # Connect to your webcam
     while True:
-        # Get heart rate from last 15 seconds
-        result = model.hr(start=-15)
-        print(f"Heart Rate: {result['hr']} BPM")
+        result = model.hr(start=-15)  # Get heart rate from last 15 seconds
+        if result:
+            print(f"Heart Rate: {result['hr']} BPM")
         time.sleep(1)
+```
+
+## Real-Time Frame Preview
+
+```python
+frame = model.frame                 # Current RGB frame 
+x, y  = model.box                   # Current detection box
+face  = frame[x[0]:x[1], y[0]:y[1]] # Face img 
 ```
 
 ## Get BVP Wave 
 ```python
-bvp, ts        = model.bvp() # BVP with timestampes
+bvp, ts        = model.bvp()         # BVP with timestampes
 raw_bvp, ts    = model.bvp(raw=True) # Unfiltered BVP
 ```
 
@@ -78,7 +86,7 @@ model = rppg.Model('RhythmMamba.rlap') # RhythmMamba trained on rlap
 |-|-|-|-| 
 |ME-chunk|PURE RLAP|rPPG based on state-space model|2025|
 |ME-flow|PURE RLAP|ME in low-latency real-time mode|2025| 
-|PhysMamba|PURE RLAP|Mamba with Fast-slow network|2024|
+|PhysMamba|PURE RLAP|Mamba with fast-slow network|2024|
 |RhythmMamba|PURE RLAP|Mamba with 1D FFT|2025|
 |PhysFormer|PURE RLAP|Transformer with central diff conv|2022| 
 |TSCAN|PURE RLAP|Conv attention with temporal shift|2020|
