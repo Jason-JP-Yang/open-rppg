@@ -3,6 +3,7 @@ warnings.filterwarnings('ignore', category=UserWarning)
 
 from .models import * 
 
+import av
 import mediapipe as mp
 import heartpy as hp
 import cv2
@@ -246,6 +247,7 @@ class Model:
             self.alive = False
             self.sp.release()
             self.ift.join()
+            self.detector.close()
                 
     def collect_signals(self, start=None, end=None):
         if not start:
@@ -352,7 +354,7 @@ class Model:
         api = 0
         if sys.platform.startswith('win32'):
             api = 700
-        self.run = threading.Thread(target=lambda:self.process_video(vid_path, api))
+        self.run = threading.Thread(target=lambda:self.__process_video_capture(vid_path, api))
         self.run.start()
         stop = self.stop
         class _:
@@ -371,7 +373,26 @@ class Model:
         self.alive = False
         self.run = None
     
-    def process_video(self, vid_path, api=None):
+    def process_video(self, vid_path):
+        container = av.open(vid_path)
+        stream = container.streams.video[0]
+        stream.thread_type = 'AUTO'
+        with self:
+            for frame in container.decode(stream):
+                rotation = -frame.rotation%360
+                ts = frame.time
+                img = frame.to_ndarray(format='rgb24')
+                if rotation == 90:
+                    img = img.swapaxes(0, 1)[:, ::-1, :]
+                elif rotation == 180:
+                    img = img[::-1, ::-1, :]
+                elif rotation == 270:
+                    img = img.swapaxes(0, 1)[::-1, :, :]
+                self.update_frame(img, ts)
+        return self.hr()
+            
+    
+    def __process_video_capture(self, vid_path, api=None):
         cap = cv2.VideoCapture(vid_path, api)
         orientation = cap.get(cv2.CAP_PROP_ORIENTATION_META)
         with self:
