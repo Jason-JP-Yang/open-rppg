@@ -10,8 +10,7 @@ pip install open-rppg
 ```python
 import rppg
 model = rppg.Model()
-model.process_video("your_video.mp4")
-result = model.hr()
+result = model.process_video("your_video.mp4")
 ```
 
 ## Result Example 
