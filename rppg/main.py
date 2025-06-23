@@ -123,19 +123,25 @@ def bandpass_filter(data, lowcut=0.5, highcut=3, fs=30, order=3):
     return filtfilt(b, a, data)
 
 class KalmanFilter1D:
-    def __init__(self, process_noise, measurement_noise, initial_state, initial_estimate_error):
-        self.process_noise = process_noise          
-        self.measurement_noise = measurement_noise  
-        self.estimate = initial_state               
-        self.estimate_error = initial_estimate_error  
+    def __init__(self, process_noise, measurement_noise, initial_state, initial_estimate_error, reference_interval=1/30):
+        self.process_noise = process_noise
+        self.measurement_noise = measurement_noise
+        self.estimate = initial_state
+        self.estimate_error = initial_estimate_error
+        self.reference_interval = reference_interval
     
-    def update(self, measurement):
+    def update(self, measurement, dt=None):
+        if dt is None:
+            dt = self.reference_interval
+        time_scale = dt / self.reference_interval
+        adjusted_process_noise = self.process_noise * (time_scale ** 2)
         prediction = self.estimate
-        prediction_error = self.estimate_error + self.process_noise
+        prediction_error = self.estimate_error + adjusted_process_noise
         kalman_gain = prediction_error / (prediction_error + self.measurement_noise)
         self.estimate = prediction + kalman_gain * (measurement - prediction)
         self.estimate_error = (1 - kalman_gain) * prediction_error
         return self.estimate
+
 
 supported_models = ['ME-chunk.rlap', 'ME-flow.rlap', 'ME-chunk.pure', 'ME-flow.pure',
                            'PhysMamba.pure', 'PhysMamba.rlap', 'RhythmMamba.rlap', 'RhythmMamba.pure',
@@ -191,6 +197,8 @@ class Model:
         self.frame = None
         self.box = None 
         self.alive = False
+        self.preview_lock = threading.Lock()
+        self.preview_lock.acquire()
     
     def __enter__(self):
         if self.alive:
@@ -248,6 +256,8 @@ class Model:
             self.sp.release()
             self.ift.join()
             self.detector.close()
+            self.n_signal -= 1 
+            self.n_frame -= 1
                 
     def collect_signals(self, start=None, end=None):
         if not start:
@@ -329,6 +339,7 @@ class Model:
             ts = time.time()
         self.frame = frame
         img = mp.Image(image_format=mp.ImageFormat.SRGB, data=np.ascontiguousarray(frame))
+        box = None
         if self.n_frame%self.detect_per_n==0:
             r = self.detector.detect_for_video(img, round(ts*1e6))
             if len(r.detections):
@@ -339,12 +350,15 @@ class Model:
             if self.boxkf is None:
                 self.boxkf = [KalmanFilter1D(0.01,0.5,i,1) for i in box.reshape(-1)]
             else:
-                box = np.array([round(k.update(i)) for k, i in  zip(self.boxkf, box.reshape(-1))]).reshape((2,2))
+                dt = ts-self.ts[-1] if self.ts else None
+                box = np.array([round(k.update(i, dt)) for k, i in zip(self.boxkf, box.reshape(-1))]).reshape((2,2))
             self.box = box
         if self.box is not None:
             img = np.ascontiguousarray(img.numpy_view()[slice(*self.box[0]), slice(*self.box[1])])
         else:
             img = None 
+        if self.preview_lock.locked():
+            self.preview_lock.release()
         self.update_face(img, ts)
     
     def video_capture(self, vid_path=0):
@@ -368,9 +382,20 @@ class Model:
         if self.run is None:
             return
         self.run.join()
+    
+    @property
+    def preview(self):
+        def f():
+            while 1:
+                if self.preview_lock is None:
+                    return
+                self.preview_lock.acquire()
+                yield self.frame, self.box 
+        return f()
         
     def stop(self):
         self.alive = False
+        self.wait_completion()
         self.run = None
     
     def process_video(self, vid_path):
