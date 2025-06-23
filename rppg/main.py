@@ -256,8 +256,6 @@ class Model:
             self.sp.release()
             self.ift.join()
             self.detector.close()
-            self.n_signal -= 1 
-            self.n_frame -= 1
                 
     def collect_signals(self, start=None, end=None):
         if not start:
