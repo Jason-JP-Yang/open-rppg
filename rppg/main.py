@@ -276,7 +276,7 @@ class Model:
             if start and i<start:
                 start_n = n 
             if end and i<=end:
-                end_n = n
+                end_n = n+1
         signals = {k:v[start_n:end_n] for k,v in signals.items()}
         ts = np.array(self.ts[start_n:end_n])
         return signals, ts - self.ts[0]
