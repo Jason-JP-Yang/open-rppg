@@ -56,9 +56,9 @@ with model.video_capture(0):          # Connect to your webcam
 ## Real-Time Frame Preview
 
 ```python
-frame = model.frame                 # Current RGB frame 
-x, y  = model.box                   # Current detection box
-face  = frame[x[0]:x[1], y[0]:y[1]] # Face img 
+for frame, box in model.preview:     # Current RGB frame and detection box
+    x, y  = box                      
+    face  = frame[x[0]:x[1], y[0]:y[1]]
 ```
 
 ## Get BVP Wave 
