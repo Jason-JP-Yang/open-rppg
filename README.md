@@ -97,3 +97,12 @@ Install JAX with CUDA (Linux only).
 ```bash
 pip install jax[cuda]
 ```
+
+## Licensing Notice
+
+This repository includes source code and tools released under the [MIT License](LICENSE).
+
+However, **pretrained models and model configurations** provided in this repository are the intellectual property of their respective authors and are licensed under the terms specified by the **original papers**. Please refer to the respective publications and their repositories for license details before using these models in your work.
+
+We do **not** claim ownership or rights to redistribute third-party models unless explicitly stated.
+
