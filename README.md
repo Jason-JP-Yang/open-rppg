@@ -83,14 +83,14 @@ model = rppg.Model('RhythmMamba.rlap') # RhythmMamba trained on rlap
 ## 🧰 Pretrained Models 
 | Model | Training Set | Description | Paper |
 |-|-|-|-| 
-|ME-chunk|PURE RLAP|rPPG based on state-space model|2025|
-|ME-flow|PURE RLAP|ME in low-latency real-time mode|2025| 
-|PhysMamba|PURE RLAP|Mamba with fast-slow network|2024|
-|RhythmMamba|PURE RLAP|Mamba with 1D FFT|2025|
-|PhysFormer|PURE RLAP|Transformer with central diff conv|2022| 
-|TSCAN|PURE RLAP|Conv attention with temporal shift|2020|
-|EfficientPhys|PURE RLAP|TSCAN with self attention|2022|
-|PhysNet|PURE RLAP|3D CNN encoder-decoder network|2019| 
+|ME-chunk|PURE RLAP|rPPG based on state-space model|[2025](https://doi.org/10.48550/arXiv.2504.01774)|
+|ME-flow|PURE RLAP|ME in low-latency real-time mode|[2025](https://doi.org/10.48550/arXiv.2504.01774)| 
+|PhysMamba|PURE RLAP|Mamba with fast-slow network|[2024](https://doi.org/10.48550/arXiv.2409.12031)|
+|RhythmMamba|PURE RLAP|Mamba with 1D FFT|[2025](https://doi.org/10.1609/aaai.v39i10.33204)|
+|PhysFormer|PURE RLAP|Transformer with central diff conv|[2022](https://openaccess.thecvf.com/content/CVPR2022/papers/Yu_PhysFormer_Facial_Video-Based_Physiological_Measurement_With_Temporal_Difference_Transformer_CVPR_2022_paper.pdf)| 
+|TSCAN|PURE RLAP|Conv attention with temporal shift|[2020](https://papers.nips.cc/paper/2020/file/e1228be46de6a0234ac22ded31417bc7-Paper.pdf)|
+|EfficientPhys|PURE RLAP|TSCAN with self attention|[2022](https://openaccess.thecvf.com/content/WACV2023/papers/Liu_EfficientPhys_Enabling_Simple_Fast_and_Accurate_Camera-Based_Cardiac_Measurement_WACV_2023_paper.pdf)|
+|PhysNet|PURE RLAP|3D CNN encoder-decoder network|[2019](https://bmvc2019.org/wp-content/uploads/papers/0186-paper.pdf)| 
 
 ## ⚡ Use CUDA 
 Install JAX with CUDA (Linux only).
@@ -106,3 +106,64 @@ However, **pretrained models and model configurations** provided in this reposit
 
 We do **not** claim ownership or rights to redistribute third-party models unless explicitly stated.
 
+## 📚 Citation
+
+```bibtex
+@article{yu2019remote,
+  title={Remote photoplethysmograph signal measurement from facial videos using spatio-temporal networks},
+  author={Yu, Zitong and Li, Xiaobai and Zhao, Guoying},
+  journal={arXiv preprint arXiv:1905.02419},
+  year={2019}
+}
+
+@article{liu2020multi,
+  title={Multi-task temporal shift attention networks for on-device contactless vitals measurement},
+  author={Liu, Xin and Fromm, Josh and Patel, Shwetak and McDuff, Daniel},
+  journal={Advances in Neural Information Processing Systems},
+  volume={33},
+  pages={19400--19411},
+  year={2020}
+}
+
+@inproceedings{liu2023efficientphys,
+  title={Efficientphys: Enabling simple, fast and accurate camera-based cardiac measurement},
+  author={Liu, Xin and Hill, Brian and Jiang, Ziheng and Patel, Shwetak and McDuff, Daniel},
+  booktitle={Proceedings of the IEEE/CVF winter conference on applications of computer vision},
+  pages={5008--5017},
+  year={2023}
+}
+
+@inproceedings{yu2022physformer,
+  title={Physformer: Facial video-based physiological measurement with temporal difference transformer},
+  author={Yu, Zitong and Shen, Yuming and Shi, Jingang and Zhao, Hengshuang and Torr, Philip HS and Zhao, Guoying},
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={4186--4196},
+  year={2022}
+}
+
+@inproceedings{luo2024physmamba,
+  title={PhysMamba: Efficient Remote Physiological Measurement with SlowFast Temporal Difference Mamba},
+  author={Luo, Chaoqi and Xie, Yiping and Yu, Zitong},
+  booktitle={Chinese Conference on Biometric Recognition},
+  pages={248--259},
+  year={2024},
+  organization={Springer}
+}
+
+@inproceedings{zou2025rhythmmamba,
+  title={RhythmMamba: Fast, Lightweight, and Accurate Remote Physiological Measurement},
+  author={Zou, Bochao and Guo, Zizheng and Hu, Xiaocheng and Ma, Huimin},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={10},
+  pages={11077--11085},
+  year={2025}
+}
+
+@article{wang2025memory,
+  title={Memory-efficient Low-latency Remote Photoplethysmography through Temporal-Spatial State Space Duality},
+  author={Wang, Kegang and Tang, Jiankai and Fan, Yuxuan and Ji, Jiatong and Shi, Yuanchun and Wang, Yuntao},
+  journal={arXiv preprint arXiv:2504.01774},
+  year={2025}
+}
+```
