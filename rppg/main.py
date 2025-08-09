@@ -374,6 +374,7 @@ class Model:
                 return self 
             def __exit__(self, *k):
                 stop()
+        self.preview_lock.acquire()
         return _()
     
     def wait_completion(self):
@@ -397,7 +398,7 @@ class Model:
         self.run = None
     
     def process_video(self, vid_path):
-        container = av.open(vid_path)
+        container = av.open(vid_path, options={"hwaccel": "cuda"})
         stream = container.streams.video[0]
         stream.thread_type = 'AUTO'
         with self:
